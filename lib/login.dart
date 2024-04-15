@@ -1,4 +1,6 @@
+import 'package:controle_remoto/services/auth_service.dart';
 import 'package:flutter/material.dart';
+
 
 class Login extends StatelessWidget {
   @override
@@ -38,7 +40,10 @@ class _LoginPageState extends State<LoginPage> {
           height: 70,
         ),
         ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              AuthService authService = AuthService();
+              await authService.signInWithGoogle();
+              },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red, // Cor de fundo do botão
               shape: RoundedRectangleBorder(
