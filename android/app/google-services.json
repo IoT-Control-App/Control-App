@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "610211695162",
+    "project_id": "iot-control-17afa",
+    "storage_bucket": "iot-control-17afa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610211695162:android:509e3b00ebb09610d6c303",
+        "android_client_info": {
+          "package_name": "com.example.controle_remoto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "610211695162-s09gd3bdj5sq3sbft27e1e534lne6cjc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWDgEgbhVfzVqm2u6ITxWT4SO_ZGZ9Bro"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "610211695162-s09gd3bdj5sq3sbft27e1e534lne6cjc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
