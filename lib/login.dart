@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 
 class Login extends StatelessWidget {
+  const Login({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(primaryColor: Colors.red[300]), home: LoginPage());
+        theme: ThemeData(primaryColor: Colors.red[300]), home: const LoginPage());
   }
 }
 
@@ -21,13 +23,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xffE7DFDF),
+      color: const Color(0xffE7DFDF),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Container(
           width: 200,
           height: 200,
-          decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-          child: Center(
+          decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+          child: const Center(
               child: Text(
             "Logo",
             style: TextStyle(
@@ -36,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: TextDecoration.none),
           )),
         ),
-        SizedBox(
+        const SizedBox(
           height: 70,
         ),
         ElevatedButton(
@@ -50,10 +52,10 @@ class _LoginPageState extends State<LoginPage> {
                 borderRadius:
                     BorderRadius.circular(50), // Raio da borda do botão
               ),
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                   horizontal: 90, vertical: 30), // Espaçamento interno do botão
             ),
-            child: Text(
+            child: const Text(
               "Login",
               style: TextStyle(
                   color: Color(0xffffffffff),

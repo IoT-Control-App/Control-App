@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class Home extends StatelessWidget {
+  const Home({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(primaryColor: Color(0xfffF14722)), home: HomePage());
+        theme: ThemeData(primaryColor: const Color(0xffff14722)), home: const HomePage());
   }
 }
 
@@ -22,8 +24,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Remote Control App', style: TextStyle(color: Colors.white),)),
-        backgroundColor: Color(0xfffF14722),
+        title: const Center(child: Text('Remote Control App', style: TextStyle(color: Colors.white),)),
+        backgroundColor: const Color(0xffff14722),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 30.0),
@@ -45,8 +47,8 @@ class _HomePageState extends State<HomePage> {
                         print("Lâmpada Inteligente");
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                       child: Text(
                         "Lâmpada Inteligente",
                         style: TextStyle(fontSize: 15, color: Colors.black),
@@ -66,8 +68,8 @@ class _HomePageState extends State<HomePage> {
                         print("Ar Condicionado");
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top:10.0),
+                    const Padding(
+                      padding: EdgeInsets.only(top:10.0),
                       child: Text(
                         "Ar Condicionado",
                         style: TextStyle(fontSize: 15),
@@ -77,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            SizedBox(height: 50), // Espaçamento entre os Rows
+            const SizedBox(height: 50), // Espaçamento entre os Rows
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,8 +96,8 @@ class _HomePageState extends State<HomePage> {
                         print("Televisão");
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top:10.0),
+                    const Padding(
+                      padding: EdgeInsets.only(top:10.0),
                       child: Text(
                         "Televisão",
                         style: TextStyle(fontSize: 15),
@@ -115,8 +117,8 @@ class _HomePageState extends State<HomePage> {
                         print("TV Box");
                         }
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top:10.0),
+                    const Padding(
+                      padding: EdgeInsets.only(top:10.0),
                       child: Text(
                         "TV Box",
                         style: TextStyle(fontSize: 15),
@@ -126,23 +128,23 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-        SizedBox(height: 130),
+        const SizedBox(height: 130),
        ElevatedButton(
             onPressed: () async {
               
               },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xfffF14722), // Cor de fundo do botão
+              backgroundColor: const Color(0xffff14722), // Cor de fundo do botão
               shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.circular(50), // Raio da borda do botão
               ),
               
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                   horizontal: 80, vertical: 15), // Espaçamento interno do botão
             ),
             
-            child: Text(
+            child: const Text(
               "Dispostivos Salvos",
               style: TextStyle(
                   color: Color(0xffffffffff),
