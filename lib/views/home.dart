@@ -1,19 +1,35 @@
-import 'package:flutter/cupertino.dart';
+import 'package:controle_remoto/views/arcondicionado.dart';
+import 'package:controle_remoto/views/lampada.dart';
+import 'package:controle_remoto/views/saveddevices.dart';
+import 'package:controle_remoto/views/tvbox.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:controle_remoto/views/tv.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  const Home({Key? key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(primaryColor: const Color(0xffff14722)), home: const HomePage());
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Center(
+          child: Text(
+            'Remote Control App',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        backgroundColor: const Color(0xffff14722),
+      ),
+      body: const HomePage(),
+      
+    );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -23,10 +39,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('Remote Control App', style: TextStyle(color: Colors.white),)),
-        backgroundColor: const Color(0xffff14722),
-      ),
+      
       body: Padding(
         padding: const EdgeInsets.only(top: 30.0),
         child: Column(
@@ -44,7 +57,10 @@ class _HomePageState extends State<HomePage> {
                         height: 130,
                       ),
                       onTap: () {
-                        print("Lâmpada Inteligente");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Lampada()),
+                        );
                       },
                     ),
                     const Padding(
@@ -65,11 +81,14 @@ class _HomePageState extends State<HomePage> {
                         height: 130,
                       ),
                       onTap: () {
-                        print("Ar Condicionado");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ArCondicionado()),
+                        );
                       },
                     ),
                     const Padding(
-                      padding: EdgeInsets.only(top:10.0),
+                      padding: EdgeInsets.only(top: 10.0),
                       child: Text(
                         "Ar Condicionado",
                         style: TextStyle(fontSize: 15),
@@ -94,31 +113,37 @@ class _HomePageState extends State<HomePage> {
                       ),
                       onTap: () {
                         print("Televisão");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Tv()),
+                        );
                       },
                     ),
                     const Padding(
-                      padding: EdgeInsets.only(top:10.0),
+                      padding: EdgeInsets.only(top: 10.0),
                       child: Text(
                         "Televisão",
                         style: TextStyle(fontSize: 15),
                       ),
                     ),
                   ],
-                ),               
+                ),
                 Column(
                   children: [
                     GestureDetector(
-                      child: Image.asset(
-                        "assets/tvbox.png",
-                        width: 130,
-                        height: 130,
-                      ),
-                      onTap: () {
-                        print("TV Box");
-                        }
-                    ),
+                        child: Image.asset(
+                          "assets/tvbox.png",
+                          width: 130,
+                          height: 130,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const TvBox()),
+                          );
+                        }),
                     const Padding(
-                      padding: EdgeInsets.only(top:10.0),
+                      padding: EdgeInsets.only(top: 10.0),
                       child: Text(
                         "TV Box",
                         style: TextStyle(fontSize: 15),
@@ -128,32 +153,45 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-        const SizedBox(height: 130),
-       ElevatedButton(
-            onPressed: () async {
-              
+            const SizedBox(height: 130),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const SavedDevices()),
+                );
               },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xffff14722), // Cor de fundo do botão
-              shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(50), // Raio da borda do botão
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xffff14722), // Cor de fundo do botão
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50), // Raio da borda do botão
+                ),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 80, vertical: 15), // Espaçamento interno do botão
               ),
-              
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 80, vertical: 15), // Espaçamento interno do botão
+              child: const Text(
+                "Dispositivos Salvos",
+                style: TextStyle(
+                    color: Color(0xffffffff),
+                    fontSize: 20,
+                    decoration: TextDecoration.none),
+              ),
             ),
-            
-            child: const Text(
-              "Dispostivos Salvos",
-              style: TextStyle(
-                  color: Color(0xffffffffff),
-                  fontSize: 20,
-                  decoration: TextDecoration.none),
-            )) // Espaçamento entre os Rows
           ],
         ),
+      ),
+    );
+  }
+}
 
+class DispositivosSalvos extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Dispositivos Salvos"),
+      ),
+      body: Center(
+        child: Text("Esta é a tela de Dispositivos Salvos"),
       ),
     );
   }
