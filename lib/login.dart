@@ -20,6 +20,67 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
+class AuthScreen extends StatelessWidget {
+  final AuthService _authService = AuthService();
+
+class _DeviceScreenState extends State<DeviceScreen> {
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ipController = TextEditingController();
+  List<Map<String, dynamic>> _devices = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDevices();
+  }
+}
+
+ void _fetchDevices() async {
+    final devices = await _dbHelper.getDevices();
+    setState(() {
+      _devices = devices;
+    });
+  }
+
+  void _addDevice() async {
+    final device = {
+      'name': _nameController.text,
+      'ip_address': _ipController.text,
+      'last_connected': DateTime.now().toIso8601String(),
+    };
+    await _dbHelper.insertDevice(device);
+    _nameController.clear();
+    _ipController.clear();
+    _fetchDevices();
+  }
+
+class DeviceScreen extends StatefulWidget {
+  @override
+  _DeviceScreenState createState() => _DeviceScreenState();
+}
+
+class _DeviceScreenState extends State<DeviceScreen> {
+  final BluetoothHelper _bluetoothHelper = BluetoothHelper();
+  final GoogleAssistantHelper _assistantHelper = GoogleAssistantHelper();
+  List<BluetoothDevice> _devices = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _bluetoothHelper.getAvailableDevices().listen((devices) {
+      setState(() {
+        _devices = devices;
+      });
+    });
+  }
+
+  void _connectAndSendCommand(BluetoothDevice device) async {
+    await _bluetoothHelper.connectToDevice(device);
+    await _assistantHelper.sendCommand("Turn on the light");
+    await _bluetoothHelper.disconnectFromDevice(device);
+  }
+
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
