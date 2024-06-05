@@ -1,6 +1,12 @@
 import 'package:controle_remoto/services/auth_service.dart';
 import 'package:controle_remoto/views/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blue/flutter_blue.dart';
+import 'package:controle_remoto/services/bluetooth_helper.dart';
+import 'package:controle_remoto/services/google_assistant_helper.dart';
+import 'package:controle_remoto/services/database_helper.dart';
+import 'package:controle_remoto:controllers/auth_controller.dart';
+
 
 
 class Login extends StatelessWidget {
