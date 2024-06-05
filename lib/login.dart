@@ -30,35 +30,65 @@ class AuthScreen extends StatelessWidget {
   final AuthService _authService = AuthService();
 
 class _DeviceScreenState extends State<DeviceScreen> {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _ipController = TextEditingController();
-  List<Map<String, dynamic>> _devices = [];
+  final BluetoothController _bluetoothController = BluetoothController();
+  final DatabaseController _dbController = DatabaseController();
+  final AuthController _authController = AuthController();
+  List<BluetoothDevice> _devices = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchDevices();
+    _bluetoothController.getAvailableDevices().listen((devices) {
+      setState(() {
+        _devices = devices;
+      });
+    });
+    _fetchStoredDevices();
   }
-}
 
- void _fetchDevices() async {
-    final devices = await _dbHelper.getDevices();
-    setState(() {
-      _devices = devices;
+ void _fetchStoredDevices() async {
+    final devices = await _dbController.getDevices();
+    // Process devices if needed
+  }
+
+  void _connectAndSendCommand(BluetoothDevice device) async {
+    await _bluetoothController.connectToDevice(device);
+    String deviceType = await _bluetoothController.detectDeviceType(device);
+
+    switch (deviceType) {
+      case 'light':
+        await _bluetoothController.turnOnLight(device);
+        break;
+      case 'tv':
+        await _bluetoothController.turnOnTV(device);
+        break;
+      case 'ac':
+        await _bluetoothController.turnOnAC(device);
+        break;
+      case 'tvbox':
+        await _bluetoothController.turnOnTVBox(device);
+        break;
+      default:
+        print('Unknown device type');
+    }
+
+    await _bluetoothController.disconnectFromDevice(device);
+
+    // Save device to local database
+    await _dbController.insertDevice({
+      'name': device.name,
+      'ip_address': device.id.toString(),
+      'last_connected': DateTime.now().toIso8601String(),
     });
   }
 
-  void _addDevice() async {
-    final device = {
-      'name': _nameController.text,
-      'ip_address': _ipController.text,
-      'last_connected': DateTime.now().toIso8601String(),
-    };
-    await _dbHelper.insertDevice(device);
-    _nameController.clear();
-    _ipController.clear();
-    _fetchDevices();
+  void _signOut() async {
+    await _authController.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => AuthScreen()),
+      (route) => false,
+    );
   }
 
 class DeviceScreen extends StatefulWidget {
