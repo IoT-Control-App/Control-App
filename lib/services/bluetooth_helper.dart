@@ -101,4 +101,21 @@ class BluetoothHelper {
     }
     throw Exception('Characteristic not found');
   }
+
+  Future<String> detectDeviceType(BluetoothDevice device) async {
+    // Placeholder logic to detect device type
+    // Use actual methods to get device info
+    String deviceName = device.name.toLowerCase();
+    if (deviceName.contains('light')) {
+      return 'light';
+    } else if (deviceName.contains('tv')) {
+      return 'tv';
+    } else if (deviceName.contains('ac') || deviceName.contains('air conditioner')) {
+      return 'ac';
+    } else if (deviceName.contains('box')) {
+      return 'tvbox';
+    } else {
+      return 'unknown';
+    }
+  }
 }

@@ -20,6 +20,10 @@ class BluetoothController {
     await _bluetoothHelper.disconnectFromDevice(device);
   }
 
+  Future<String> detectDeviceType(BluetoothDevice device) async {
+    return await _bluetoothHelper.detectDeviceType(device);
+  }
+
   // Smart Light
   Future<void> turnOnLight(BluetoothDevice device) async {
     await _bluetoothHelper.turnOnLight(device);
