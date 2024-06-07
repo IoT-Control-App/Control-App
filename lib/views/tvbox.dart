@@ -67,9 +67,9 @@ class _TvBoxPageState extends State<TvBoxPage> {
   void _connectToDevice() async {
     if (_selectedDevice != null) {
       await _bluetoothHelper.connectToDevice(_selectedDevice!);
-      // Add additional logic after connection if needed
+      
     } else {
-      // Handle case where no device is selected
+     
       print('No device selected');
     }
   }

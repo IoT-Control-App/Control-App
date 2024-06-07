@@ -48,7 +48,7 @@ class LampadaPage extends StatefulWidget {
 
 class _LampadaPageState extends State<LampadaPage> {
    final BluetoothHelper _bluetoothHelper = BluetoothHelper();
-  BluetoothDevice? _selectedDevice; // Torne _selectedDevice nullable
+  BluetoothDevice? _selectedDevice; 
   int _brightness = 50;
 
   @override
@@ -69,9 +69,9 @@ class _LampadaPageState extends State<LampadaPage> {
   void _connectToDevice() async {
     if (_selectedDevice != null) {
       await _bluetoothHelper.connectToDevice(_selectedDevice!);
-      // Add additional logic after connection if needed
+      
     } else {
-      // Handle case where no device is selected
+      
       print('No device selected');
     }
   }
