@@ -6,7 +6,7 @@ import 'package:controle_remoto/views/saveddevices.dart';
 import 'package:controle_remoto/views/tv.dart';
 import 'package:controle_remoto/views/tvbox.dart';
 import 'package:flutter/material.dart';
-import 'database_helper.dart';
+// import 'database_helper.dart';
 
 void main() {
   runApp(const Login());

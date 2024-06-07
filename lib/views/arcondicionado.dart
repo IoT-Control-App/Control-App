@@ -1,6 +1,8 @@
+import 'package:controle_remoto/services/bluetooth_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_blue/flutter_blue.dart'; // Adicione esta linha para importar a biblioteca flutter_blue
 
 class ArCondicionado extends StatelessWidget {
   const ArCondicionado({super.key});
@@ -8,31 +10,31 @@ class ArCondicionado extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-  appBar: AppBar(
-    title: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [      
-        const Center(
-          child: Text(
-            'Ar Condicionado',
-            style: TextStyle(color: Colors.white),
-          ),
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Center(
+              child: Text(
+                'Ar Condicionado',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: GestureDetector(
+                child: const Icon(Icons.edit, color: Colors.white, size: 30),
+                onTap: () {
+                  print("Editar");
+                },
+              ),
+            ),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0), 
-          child: GestureDetector(
-            child: const Icon(Icons.edit, color: Colors.white, size: 30),
-            onTap: () {
-              print("Editar");
-            },
-          ),
-        ),
-      ],
-    ),
-    backgroundColor: const Color(0xffff14722),
-  ),
-  body: const ArCondicionadoPage(),
-);
+        backgroundColor: const Color(0xffff14722),
+      ),
+      body: const ArCondicionadoPage(),
+    );
   }
 }
 
@@ -44,14 +46,69 @@ class ArCondicionadoPage extends StatefulWidget {
 }
 
 class _ArCondicionadoPageState extends State<ArCondicionadoPage> {
+  final BluetoothHelper _bluetoothHelper = BluetoothHelper();
+  BluetoothDevice? _selectedDevice; 
+  int _currentTemperature = 25;
+
+  @override
+  void initState() {
+    super.initState();
+    _startBluetoothScan();
+  }
+
+  void _startBluetoothScan() async {
+    await _bluetoothHelper.startScan();
+    _bluetoothHelper.getAvailableDevices().listen((devices) {
+      setState(() {
+        _selectedDevice = devices.isNotEmpty ? devices.first : null;
+      });
+    });
+  }
+
+  void _connectToDevice() async {
+    if (_selectedDevice != null) {
+      await _bluetoothHelper.connectToDevice(_selectedDevice!);
+      // Add additional logic after connection if needed
+    } else {
+      // Handle case where no device is selected
+      print('No device selected');
+    }
+  }
+
+  void _turnOnOffAc() async {
+    if (_selectedDevice != null) {
+      await _bluetoothHelper.turnOnAC(_selectedDevice!);
+    }
+  }
+
+  void _increaseTemperature() async {
+    if (_selectedDevice != null && _currentTemperature < 30) {
+      _currentTemperature++;
+      await _bluetoothHelper.setACTemperature(_selectedDevice!, _currentTemperature);
+    }
+  }
+
+  void _decreaseTemperature() async {
+    if (_selectedDevice != null && _currentTemperature > 16) {
+      _currentTemperature--;
+      await _bluetoothHelper.setACTemperature(_selectedDevice!, _currentTemperature);
+    }
+  }
+
+  @override
+  void dispose() {
+    _bluetoothHelper.stopScan();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffE7DFDF),
-      
       body: Padding(
-          padding: const EdgeInsets.only(top: 30.0),
-          child: Column(children: [
+        padding: const EdgeInsets.only(top: 30.0),
+        child: Column(
+          children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -59,15 +116,16 @@ class _ArCondicionadoPageState extends State<ArCondicionadoPage> {
                   width: 80,
                   height: 80,
                   decoration: const BoxDecoration(
-                      color: Color(0xfffffffff), shape: BoxShape.circle),
+                    color: Color(0xfffffffff),
+                    shape: BoxShape.circle,
+                  ),
                   child: Center(
-                      child: GestureDetector(
-                    child: const Icon(Icons.power_settings_new_sharp,
-                        color: Colors.black, size: 60),
-                    onTap: () {
-                      print('Ligar/Desligar');
-                    },
-                  )),
+                    child: GestureDetector(
+                      child: const Icon(Icons.power_settings_new_sharp,
+                          color: Colors.black, size: 60),
+                      onTap: _turnOnOffAc,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -85,7 +143,7 @@ class _ArCondicionadoPageState extends State<ArCondicionadoPage> {
                   ),
                   child: Center(
                     child: Text(
-                      '25°C',
+                      '$_currentTemperature°C',
                       style: const TextStyle(fontSize: 30),
                     ),
                   ),
@@ -97,18 +155,17 @@ class _ArCondicionadoPageState extends State<ArCondicionadoPage> {
               width: 70,
               height: 200,
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(50)),
+                color: Colors.white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(50),
+              ),
               child: Center(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     GestureDetector(
                       child: const Icon(Icons.keyboard_arrow_up, size: 60),
-                      onTap: () {
-                        print('Aumentar Temperatura');
-                      },
+                      onTap: _increaseTemperature,
                     ),
                     const Text('TEMP', style: TextStyle(fontSize: 20)),
                     GestureDetector(
@@ -116,13 +173,13 @@ class _ArCondicionadoPageState extends State<ArCondicionadoPage> {
                         Icons.keyboard_arrow_down,
                         size: 60,
                       ),
-                      onTap: () {
-                        print('Diminuir Temperatura');
-                      },
+                      onTap: _decreaseTemperature,
                     ),
-                  ])),
+                  ],
+                ),
+              ),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -134,14 +191,14 @@ class _ArCondicionadoPageState extends State<ArCondicionadoPage> {
                       border: Border.all(color: Colors.black),
                     ),
                     child: Center(
-                      child: Text(
+                      child: const Text(
                         "MODO",
                         style: TextStyle(color: Colors.black, fontSize: 20),
                       ),
                     ),
                   ),
                   onTap: () {
-                    print('OK');
+                    print('MODO');
                   },
                 ),
                 GestureDetector(
@@ -152,14 +209,14 @@ class _ArCondicionadoPageState extends State<ArCondicionadoPage> {
                       border: Border.all(color: Colors.black),
                     ),
                     child: Center(
-                      child: Text(
+                      child: const Text(
                         "VELOCIDADE",
                         style: TextStyle(color: Colors.black, fontSize: 20),
                       ),
                     ),
                   ),
                   onTap: () {
-                    print('OK');
+                    print('VELOCIDADE');
                   },
                 ),
                 GestureDetector(
@@ -170,14 +227,14 @@ class _ArCondicionadoPageState extends State<ArCondicionadoPage> {
                       border: Border.all(color: Colors.black),
                     ),
                     child: Center(
-                      child: Text(
+                      child: const Text(
                         "DIREÇÃO",
                         style: TextStyle(color: Colors.black, fontSize: 20),
                       ),
                     ),
                   ),
                   onTap: () {
-                    print('OK');
+                    print('DIREÇÃO');
                   },
                 ),
               ],
@@ -193,14 +250,14 @@ class _ArCondicionadoPageState extends State<ArCondicionadoPage> {
                       border: Border.all(color: Colors.black),
                     ),
                     child: Center(
-                      child: Text(
+                      child: const Text(
                         "OSCILAR",
                         style: TextStyle(color: Colors.black, fontSize: 20),
                       ),
                     ),
                   ),
                   onTap: () {
-                    print('OK');
+                    print('OSCILAR');
                   },
                 ),
                 GestureDetector(
@@ -211,14 +268,14 @@ class _ArCondicionadoPageState extends State<ArCondicionadoPage> {
                       border: Border.all(color: Colors.black),
                     ),
                     child: Center(
-                      child: Text(
+                      child: const Text(
                         "TIMER",
                         style: TextStyle(color: Colors.black, fontSize: 20),
                       ),
                     ),
                   ),
                   onTap: () {
-                    print('OK');
+                    print('TIMER');
                   },
                 ),
                 GestureDetector(
@@ -229,19 +286,21 @@ class _ArCondicionadoPageState extends State<ArCondicionadoPage> {
                       border: Border.all(color: Colors.black),
                     ),
                     child: Center(
-                      child: Text(
+                      child: const Text(
                         "SUSPENDER",
                         style: TextStyle(color: Colors.black, fontSize: 20),
                       ),
                     ),
                   ),
                   onTap: () {
-                    print('OK');
+                    print('SUSPENDER');
                   },
                 ),
               ],
-            )
-          ])),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
