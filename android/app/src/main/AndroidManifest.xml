@@ -1,4 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+ <!-- Permissões de Bluetooth -->
+            <uses-permission android:name="android.permission.BLUETOOTH" />
+            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+            <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:required="true"/>
+            <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" android:required="true"/>
+            <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" android:required="true"/>
+
+
+            <!-- Permissão de localização (necessária para escanear dispositivos Bluetooth) -->
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
         android:label="smart_control_app"
         android:name="${applicationName}"
@@ -15,17 +26,10 @@
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
-                   <!-- Permissões de Bluetooth -->
-            <uses-permission android:name="android.permission.BLUETOOTH" />
-            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-            <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:required="true"/>
-            <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" android:required="true"/>
-            <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" android:required="true"/>
+            
 
             
-            <!-- Permissão de localização (necessária para escanear dispositivos Bluetooth) -->
-            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+            
 
 
             <meta-data
@@ -43,6 +47,18 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+     <!-- Permissões de Bluetooth -->
+            <uses-permission android:name="android.permission.BLUETOOTH" />
+            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+            <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:required="true"/>
+            <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" android:required="true"/>
+            <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" android:required="true"/>
+
+
+            <!-- Permissão de localização (necessária para escanear dispositivos Bluetooth) -->
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility?hl=en and
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:controle_remoto/controllers/bluetooth_controller.dart';
-import 'package:controle_remoto/controllers/database_controller.dart';
-import 'package:controle_remoto/controllers/auth_controller.dart';
+import 'package:smart_control_app/controller/bluetooth_controller.dart';
+import 'package:smart_control_app/controller/database_controller.dart';
+import 'package:smart_control_app/controller/auth_controller.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:smart_control_app/login.dart';
 
 class DeviceScreen extends StatefulWidget {
   @override
