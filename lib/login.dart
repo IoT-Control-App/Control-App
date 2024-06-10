@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:smart_control_app/services/auth_service.dart';
-import 'package:smart_control_app/views/home.dart';
+import 'package:flutter_blue/flutter_blue.dart';
+import 'package:controle_remoto/services/auth_service.dart';
+import 'package:controle_remoto/services/bluetooth_helper.dart';
+import 'package:controle_remoto/services/google_assistant_helper.dart';
+import 'package:controle_remoto/services/database_helper.dart';
+import 'package:controle_remoto/controllers/auth_controller.dart';
+import 'package:controle_remoto/controllers/bluetooth_controller.dart';
+import 'package:controle_remoto/controllers/database_controller.dart';
+import 'package:controle_remoto/views/home.dart';
+
+void main() {
+  runApp(Login());
+}
 
 class Login extends StatelessWidget {
+  const Login({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(primaryColor: Colors.red[300]), home: LoginPage());
+      theme: ThemeData(primaryColor: Colors.red[300]),
+      home: const LoginPage(),
+    );
   }
 }
 
@@ -18,49 +33,179 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final AuthController _authController = AuthController();
+
+  void _signIn() async {
+    await _authController.signInWithGoogle();
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const Home()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xffE7DFDF),
+      color: const Color(0xffE7DFDF),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Container(
           width: 200,
           height: 200,
-          decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-          child: Center(
-              child: Text(
-            "Logo",
-            style: TextStyle(
-                color: Color(0xffffffffff),
-                fontSize: 30,
-                decoration: TextDecoration.none),
-          )),
-        ),
-        SizedBox(
-          height: 70,
-        ),
-        ElevatedButton(
-            onPressed: () async  {
-            await AuthService().signInWithGoogle();
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red, // Cor de fundo do botão
-              shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(50), // Raio da borda do botão
-              ),
-              padding: EdgeInsets.symmetric(
-                  horizontal: 90, vertical: 30), // Espaçamento interno do botão
-            ),
+          decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+          child: const Center(
             child: Text(
-              "Login",
+              "Logo",
               style: TextStyle(
-                  color: Color(0xffffffffff),
-                  fontSize: 30,
-                  decoration: TextDecoration.none),
-            ))
+                color: Color(0xffffffff),
+                fontSize: 30,
+                decoration: TextDecoration.none,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 70),
+        ElevatedButton(
+          onPressed: _signIn,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 90, vertical: 30),
+          ),
+          child: const Text(
+            "Login",
+            style: TextStyle(
+              color: Color(0xffffffff),
+              fontSize: 30,
+              decoration: TextDecoration.none,
+            ),
+          ),
+        ),
       ]),
+    );
+  }
+}
+
+class AuthScreen extends StatelessWidget {
+  final AuthService _authService = AuthService();
+
+  @override
+  Widget build(BuildContext context) {
+    // Auth screen content
+    return Container();
+  }
+}
+
+class DeviceScreen extends StatefulWidget {
+  @override
+  _DeviceScreenState createState() => _DeviceScreenState();
+}
+
+class _DeviceScreenState extends State<DeviceScreen> {
+  final BluetoothController _bluetoothController = BluetoothController();
+  final DatabaseController _dbController = DatabaseController();
+  final AuthController _authController = AuthController();
+  List<BluetoothDevice> _devices = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _bluetoothController.getAvailableDevices().listen((devices) {
+      setState(() {
+        _devices = devices;
+      });
+    });
+    _fetchStoredDevices();
+  }
+
+  void _fetchStoredDevices() async {
+    final devices = await _dbController.getDevices();
+    // Process devices if needed
+  }
+
+  void _connectAndSendCommand(BluetoothDevice device) async {
+    await _bluetoothController.connectToDevice(device);
+    String deviceType = await _bluetoothController.detectDeviceType(device);
+
+    switch (deviceType) {
+      case 'light':
+        await _bluetoothController.turnOnLight(device);
+        break;
+      case 'tv':
+        await _bluetoothController.turnOnTV(device);
+        break;
+      case 'ac':
+        await _bluetoothController.turnOnAC(device);
+        break;
+      case 'tvbox':
+        await _bluetoothController.turnOnTVBox(device);
+        break;
+      default:
+        print('Unknown device type');
+    }
+
+    await _bluetoothController.disconnectFromDevice(device);
+
+    // Save device to local database
+    await _dbController.insertDevice({
+      'name': device.name,
+      'ip_address': device.id.toString(),
+      'last_connected': DateTime.now().toIso8601String(),
+    });
+  }
+
+  void _signOut() async {
+    await _authController.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => AuthScreen()),
+      (route) => false,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Bluetooth Devices'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: _signOut,
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              _bluetoothController.startScan();
+            },
+            child: Text('Start Scan'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _bluetoothController.stopScan();
+            },
+            child: Text('Stop Scan'),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _devices.length,
+              itemBuilder: (context, index) {
+                final device = _devices[index];
+                return ListTile(
+                  title: Text(device.name),
+                  subtitle: Text(device.id.toString()),
+                  onTap: () {
+                    _connectAndSendCommand(device);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
