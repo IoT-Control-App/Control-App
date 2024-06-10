@@ -89,6 +89,14 @@ class BluetoothHelper {
     await characteristic.write(direction.codeUnits); // Navega na TV Box
   }
 
+  Future<void> increaseVolume(BluetoothDevice device) async {
+    // Send command to increase volume
+  }
+
+  Future<void> decreaseVolume(BluetoothDevice device) async {
+    // Send command to decrease volume
+  }
+
   Future<BluetoothCharacteristic> _getCharacteristic(
       BluetoothDevice device, String uuid) async {
     List<BluetoothService> services = await device.discoverServices();

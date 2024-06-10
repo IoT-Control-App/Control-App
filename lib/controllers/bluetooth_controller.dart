@@ -46,6 +46,14 @@ class BluetoothController {
     await _bluetoothHelper.turnOffTV(device);
   }
 
+  Future<void> increaseVolume(BluetoothDevice device) async {
+    await _bluetoothHelper.increaseVolume(device);
+  }
+
+  Future<void> decreaseVolume(BluetoothDevice device) async {
+    await _bluetoothHelper.decreaseVolume(device);
+  }
+
   Future<void> changeChannel(BluetoothDevice device, int channel) async {
     await _bluetoothHelper.changeChannel(device, channel);
   }
