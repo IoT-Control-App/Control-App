@@ -1,6 +1,9 @@
+import 'package:smart_control_app/services/bluetooth_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_blue/flutter_blue.dart';
+
 
 class Lampada extends StatelessWidget {
   const Lampada({super.key});
@@ -14,7 +17,7 @@ class Lampada extends StatelessWidget {
       children: [      
         const Center(
           child: Text(
-            'Ar Condicionado',
+            'Lâmpada Inteligente',
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -44,6 +47,61 @@ class LampadaPage extends StatefulWidget {
 }
 
 class _LampadaPageState extends State<LampadaPage> {
+   final BluetoothHelper _bluetoothHelper = BluetoothHelper();
+  BluetoothDevice? _selectedDevice; 
+  int _brightness = 50;
+
+  @override
+  void initState() {
+    super.initState();
+    _startBluetoothScan();
+  }
+
+  void _startBluetoothScan() async {
+    await _bluetoothHelper.startScan();
+    _bluetoothHelper.getAvailableDevices().listen((devices) {
+      setState(() {
+        _selectedDevice = devices.isNotEmpty ? devices.first : null;
+      });
+    });
+  }
+
+  void _connectToDevice() async {
+    if (_selectedDevice != null) {
+      await _bluetoothHelper.connectToDevice(_selectedDevice!);
+      
+    } else {
+      
+      print('No device selected');
+    }
+  }
+
+  void _turnOnLamp() async {
+    if (_selectedDevice != null) {
+      await _bluetoothHelper.turnOnLight(_selectedDevice!);
+    }
+  }
+
+  void _increaseBrightness() async {
+    if (_selectedDevice != null && _brightness < 100) {
+      _brightness += 10;
+      await _bluetoothHelper.setBrightness(_selectedDevice!, _brightness);
+    }
+  }
+
+  void _decreaseBrightness() async {
+    if (_selectedDevice != null && _brightness > 0) {
+      _brightness -= 10;
+      await _bluetoothHelper.setBrightness(_selectedDevice!, _brightness);
+    }
+  }
+
+  @override
+  void dispose() {
+    _bluetoothHelper.stopScan();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,9 +122,7 @@ class _LampadaPageState extends State<LampadaPage> {
                         child: GestureDetector(
                       child: const Icon(Icons.power_settings_new_sharp,
                           color: Colors.black, size: 60),
-                      onTap: () {
-                        print('Ligar/Desligar');
-                      },
+                      onTap: _turnOnLamp,
                     )),
                   ),
                 ],
@@ -87,9 +143,7 @@ class _LampadaPageState extends State<LampadaPage> {
                           children: [
                         GestureDetector(
                           child: const Icon(Icons.keyboard_arrow_up, size: 60),
-                          onTap: () {
-                            print('Aumentar Brilho');
-                          },
+                          onTap: _increaseBrightness,
                         ),
                         const Text('BRILHO', style: TextStyle(fontSize: 20)),
                         GestureDetector(
@@ -97,9 +151,7 @@ class _LampadaPageState extends State<LampadaPage> {
                             Icons.keyboard_arrow_down,
                             size: 60,
                           ),
-                          onTap: () {
-                            print('Diminuir Brilho');
-                          },
+                          onTap: _decreaseBrightness,
                         ),
                       ])),
                 ),
