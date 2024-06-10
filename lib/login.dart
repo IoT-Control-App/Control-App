@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:controle_remoto/services/auth_service.dart';
-import 'package:controle_remoto/services/bluetooth_helper.dart';
-import 'package:controle_remoto/services/google_assistant_helper.dart';
-import 'package:controle_remoto/services/database_helper.dart';
-import 'package:controle_remoto/controllers/auth_controller.dart';
-import 'package:controle_remoto/controllers/bluetooth_controller.dart';
-import 'package:controle_remoto/controllers/database_controller.dart';
-import 'package:controle_remoto/views/home.dart';
+import 'package:smart_control_app/services/auth_service.dart';
+import 'package:smart_control_app/services/bluetooth_helper.dart';
+import 'package:smart_control_app/services/google_assistant_helper.dart';
+import 'package:smart_control_app/services/database_helper.dart';
+import 'package:smart_control_app/controller/auth_controller.dart';
+import 'package:smart_control_app/controller/bluetooth_controller.dart';
+import 'package:smart_control_app/controller/database_controller.dart';
+import 'package:smart_control_app/views/home.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(Login());
@@ -37,9 +38,14 @@ class _LoginPageState extends State<LoginPage> {
 
   void _signIn() async {
     await _authController.signInWithGoogle();
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const Home()),
-    );
+    final status = await Permission.location.request();
+    if (status.isGranted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const Home()),
+      );
+    } else {
+      print('Permission denied');
+    }
   }
 
   @override
@@ -50,7 +56,8 @@ class _LoginPageState extends State<LoginPage> {
         Container(
           width: 200,
           height: 200,
-          decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+          decoration:
+              const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
           child: const Center(
             child: Text(
               "Logo",
