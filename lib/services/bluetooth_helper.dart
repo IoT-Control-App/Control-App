@@ -90,11 +90,14 @@ class BluetoothHelper {
   }
 
   Future<void> increaseVolume(BluetoothDevice device) async {
-    // Send command to increase volume
+
+    var characteristic = await _getCharacteristic(device, 'increaseVolumeUUID');
+    await characteristic.write([0x01]);
   }
 
   Future<void> decreaseVolume(BluetoothDevice device) async {
-    // Send command to decrease volume
+    var characteristic = await _getCharacteristic(device, 'decreaseVolumeUUID');
+    await characteristic.write([0x00]);
   }
 
   Future<BluetoothCharacteristic> _getCharacteristic(

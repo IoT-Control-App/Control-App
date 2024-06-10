@@ -2,7 +2,8 @@ import 'package:controle_remoto/services/bluetooth_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_blue/flutter_blue.dart'; // Adicione esta linha para importar a biblioteca flutter_blue
+import 'package:flutter_blue/flutter_blue.dart';
+import 'package:smart_control_app/services/bluetooth_helper.dart'; // Adicione esta linha para importar a biblioteca flutter_blue
 
 class ArCondicionado extends StatelessWidget {
   const ArCondicionado({super.key});

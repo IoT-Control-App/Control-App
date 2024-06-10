@@ -1,10 +1,10 @@
-import 'package:controle_remoto/views/arcondicionado.dart';
-import 'package:controle_remoto/views/lampada.dart';
-import 'package:controle_remoto/views/saveddevices.dart';
-import 'package:controle_remoto/views/tvbox.dart';
+import 'package:smart_control_app/views/arcondicionado.dart';
+import 'package:smart_control_app/views/lampada.dart';
+import 'package:smart_control_app/views/saveddevices.dart';
+import 'package:smart_control_app/views/tvbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:controle_remoto/views/tv.dart';
+import 'package:smart_control_app/views/tv.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key});

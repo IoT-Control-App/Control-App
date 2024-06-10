@@ -1,5 +1,5 @@
 import 'package:flutter_blue/flutter_blue.dart';
-import '../services/bluetooth_helper.dart';
+import 'package:smart_control_app/services/bluetooth_helper.dart';
 
 class BluetoothController {
   final BluetoothHelper _bluetoothHelper = BluetoothHelper();

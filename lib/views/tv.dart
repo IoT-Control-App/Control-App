@@ -1,3 +1,4 @@
+import 'package:smart_control_app/services/bluetooth_helper.dart';
 import 'package:controle_remoto/services/bluetooth_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -100,6 +101,7 @@ class _TvPageState extends State<TvPage> {
     if (_selectedDevice != null && _currentVolume < 100) {
       _currentVolume += 10;
       //A gente nao fez a funçao de volume, mas deixei pronto aqui de quebradas
+      await _bluetoothHelper.increaseVolume(_selectedDevice!);
       // await _bluetoothHelper.setVolume(_selectedDevice!, _currentVolume);
     }
   }
@@ -108,6 +110,7 @@ class _TvPageState extends State<TvPage> {
     if (_selectedDevice != null && _currentVolume > 0) {
       _currentVolume -= 10;
       //A gente nao fez a função de volume, mas deixei pronto aqui de quebradas
+      await _bluetoothHelper.decreaseVolume(_selectedDevice!);
       // await _bluetoothHelper.setVolume(_selectedDevice!, _currentVolume);
     }
   }

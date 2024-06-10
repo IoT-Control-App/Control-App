@@ -1,3 +1,4 @@
+import 'package:smart_control_app/services/bluetooth_helper.dart';
 import 'package:controle_remoto/services/bluetooth_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

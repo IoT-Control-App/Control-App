@@ -1,5 +1,5 @@
 import 'package:google_sign_in/google_sign_in.dart';
-import '../services/auth_service.dart';
+import 'package:smart_control_app/services/auth_service.dart';
 
 class AuthController {
   final AuthService _authService = AuthService();

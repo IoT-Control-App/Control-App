@@ -1,4 +1,4 @@
-import '../services/database_helper.dart';
+import 'package:smart_control_app/services/database_helper.dart';
 
 class DatabaseController {
   final DatabaseHelper _dbHelper = DatabaseHelper();
