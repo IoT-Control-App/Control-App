@@ -1,9 +1,8 @@
 import 'package:smart_control_app/services/bluetooth_helper.dart';
-import 'package:smart_control_app/services/bluetooth_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_blue/flutter_blue.dart'; // Adicione esta linha para importar a biblioteca flutter_blue
+import 'package:permission_handler/permission_handler.dart';
 
 class TvBox extends StatelessWidget {
   const TvBox({super.key});
@@ -53,24 +52,37 @@ class _TvBoxPageState extends State<TvBoxPage> {
   @override
   void initState() {
     super.initState();
-    _startBluetoothScan();
+    _checkPermissionsAndStartScan();
+  }
+
+  void _checkPermissionsAndStartScan() async {
+    if (await Permission.location.isGranted &&
+        await Permission.bluetooth.isGranted &&
+        await Permission.bluetoothScan.isGranted &&
+        await Permission.bluetoothConnect.isGranted) {
+      _startBluetoothScan();
+    } else {
+      print('Permissões necessárias não concedidas');
+    }
   }
 
   void _startBluetoothScan() async {
-    await _bluetoothHelper.startScan();
-    _bluetoothHelper.getAvailableDevices().listen((devices) {
-      setState(() {
-        _selectedDevice = devices.isNotEmpty ? devices.first : null;
+    try {
+      await _bluetoothHelper.startScan();
+      _bluetoothHelper.getAvailableDevices().listen((devices) {
+        setState(() {
+          _selectedDevice = devices.isNotEmpty ? devices.first : null;
+        });
       });
-    });
+    } catch (e) {
+      print('Error starting scan: $e');
+    }
   }
 
   void _connectToDevice() async {
     if (_selectedDevice != null) {
       await _bluetoothHelper.connectToDevice(_selectedDevice!);
-      
     } else {
-     
       print('No device selected');
     }
   }

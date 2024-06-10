@@ -1,9 +1,9 @@
 import 'package:smart_control_app/services/bluetooth_helper.dart';
-import 'package:smart_control_app/services/bluetooth_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_blue/flutter_blue.dart'; // Adicione esta linha para importar a biblioteca flutter_blue
+import 'package:flutter_blue/flutter_blue.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Tv extends StatelessWidget {
   const Tv({super.key});
@@ -48,31 +48,44 @@ class TvPage extends StatefulWidget {
 
 class _TvPageState extends State<TvPage> {
   final BluetoothHelper _bluetoothHelper = BluetoothHelper();
-  BluetoothDevice? _selectedDevice; // Torne _selectedDevice nullable
+  BluetoothDevice? _selectedDevice;
   int _currentChannel = 1;
   int _currentVolume = 50;
 
   @override
   void initState() {
     super.initState();
-    _startBluetoothScan();
+    _checkPermissionsAndStartScan();
+  }
+
+  void _checkPermissionsAndStartScan() async {
+    if (await Permission.location.isGranted &&
+        await Permission.bluetooth.isGranted &&
+        await Permission.bluetoothScan.isGranted &&
+        await Permission.bluetoothConnect.isGranted) {
+      _startBluetoothScan();
+    } else {
+      print('Permissões necessárias não concedidas');
+    }
   }
 
   void _startBluetoothScan() async {
-    await _bluetoothHelper.startScan();
-    _bluetoothHelper.getAvailableDevices().listen((devices) {
-      setState(() {
-        _selectedDevice = devices.isNotEmpty ? devices.first : null;
+    try {
+      await _bluetoothHelper.startScan();
+      _bluetoothHelper.getAvailableDevices().listen((devices) {
+        setState(() {
+          _selectedDevice = devices.isNotEmpty ? devices.first : null;
+        });
       });
-    });
+    } catch (e) {
+      print('Error starting scan: $e');
+    }
   }
 
   void _connectToDevice() async {
     if (_selectedDevice != null) {
       await _bluetoothHelper.connectToDevice(_selectedDevice!);
-      // Add additional logic after connection if needed
     } else {
-      // Handle case where no device is selected
       print('No device selected');
     }
   }
@@ -100,18 +113,14 @@ class _TvPageState extends State<TvPage> {
   void _increaseVolume() async {
     if (_selectedDevice != null && _currentVolume < 100) {
       _currentVolume += 10;
-      //A gente nao fez a funçao de volume, mas deixei pronto aqui de quebradas
       await _bluetoothHelper.increaseVolume(_selectedDevice!);
-      // await _bluetoothHelper.setVolume(_selectedDevice!, _currentVolume);
     }
   }
 
   void _decreaseVolume() async {
     if (_selectedDevice != null && _currentVolume > 0) {
       _currentVolume -= 10;
-      //A gente nao fez a função de volume, mas deixei pronto aqui de quebradas
       await _bluetoothHelper.decreaseVolume(_selectedDevice!);
-      // await _bluetoothHelper.setVolume(_selectedDevice!, _currentVolume);
     }
   }
 
@@ -158,7 +167,6 @@ class _TvPageState extends State<TvPage> {
                   height: 200,
                   child: Stack(
                     children: [
-                      // Círculo grande
                       Container(
                         width: 200,
                         height: 200,
@@ -167,7 +175,6 @@ class _TvPageState extends State<TvPage> {
                           color: Colors.grey[200],
                         ),
                       ),
-                      // Setinhas dentro do círculo
                       Positioned(
                         top: 0,
                         left: 70,
@@ -208,7 +215,6 @@ class _TvPageState extends State<TvPage> {
                           },
                         ),
                       ),
-                      // Círculo com o ícone "ok"
                       Positioned(
                         top: 60,
                         left: 60,
@@ -220,14 +226,14 @@ class _TvPageState extends State<TvPage> {
                             height: 10,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Color(0xffE7DFDF), // Cor do círculo
+                              color: Color(0xffE7DFDF),
                             ),
                             child: const Center(
                               child: Text(
                                 "OK",
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 20),
-                              ), // Ícone "ok"
+                              ),
                             ),
                           ),
                           onTap: () {
@@ -278,7 +284,7 @@ class _TvPageState extends State<TvPage> {
                     borderRadius: BorderRadius.circular(50)),
                 child: Center(
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.space_between,
                         children: [
                       GestureDetector(
                         child: const Icon(Icons.keyboard_arrow_up, size: 60),
@@ -297,7 +303,7 @@ class _TvPageState extends State<TvPage> {
             ]),
             const SizedBox(height: 30),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.space_between,
               children: [
                 Container(
                   margin: const EdgeInsets.only(left: 30),
